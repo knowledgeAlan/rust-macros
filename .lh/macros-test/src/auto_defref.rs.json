@@ -1,0 +1,130 @@
+{
+    "sourceFile": "macros-test/src/auto_defref.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 28,
+            "patches": [
+                {
+                    "date": 1720605469964,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1720605484524,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,7 @@\n use darling::{ast::Data,FromDeriveInput,FromField};\n use proc_macro2::TokenStream;\n use quote::quote;\n use syn::DeriveInput;\n+\n+\n+#[derive(Debug,FromDeriveInput)]\n"
+                },
+                {
+                    "date": 1720605498270,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,4 +4,5 @@\n use syn::DeriveInput;\n \n \n #[derive(Debug,FromDeriveInput)]\n+#[darling(attributes)]\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605568905,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,5 +4,11 @@\n use syn::DeriveInput;\n \n \n #[derive(Debug,FromDeriveInput)]\n-#[darling(attributes)]\n\\ No newline at end of file\n+#[darling(attributes(deref))]\n+struct AutoDebugInfo{\n+    ident: syn::Ident,\n+    generics: syn::Generics,\n+    data: syn::Data<(),AutoDerefFieldsInfo>,\n+    \n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605618111,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,6 +9,9 @@\n struct AutoDebugInfo{\n     ident: syn::Ident,\n     generics: syn::Generics,\n     data: syn::Data<(),AutoDerefFieldsInfo>,\n-    \n+    #[darling(default)]\n+    mutable: bool,\n+    #[darling(default)]\n+    field: Option<syn::Ident>\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605641795,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,5 +13,8 @@\n     #[darling(default)]\n     mutable: bool,\n     #[darling(default)]\n     field: Option<syn::Ident>\n-}\n\\ No newline at end of file\n+}\n+\n+\n+#[derive(Debug,FromField)]\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605663007,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,5 +16,8 @@\n     field: Option<syn::Ident>\n }\n \n \n-#[derive(Debug,FromField)]\n\\ No newline at end of file\n+#[derive(Debug,FromField)]\n+struct AutoDerefFieldsInfo {\n+    \n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605687219,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,6 +18,7 @@\n \n \n #[derive(Debug,FromField)]\n struct AutoDerefFieldsInfo {\n-    \n+    ident: Option<syn::Ident>,\n+    ty: syn::Type,\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605731927,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,5 +20,10 @@\n #[derive(Debug,FromField)]\n struct AutoDerefFieldsInfo {\n     ident: Option<syn::Ident>,\n     ty: syn::Type,\n+}\n+\n+\n+pub (crate) fn process_auto_deref(input: DeriveInput) -> TokenStream {\n+    \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605776507,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,6 +24,9 @@\n }\n \n \n pub (crate) fn process_auto_deref(input: DeriveInput) -> TokenStream {\n-    \n+\n+    let AutoDerefInfo {\n+\n+    } = AutoDerefInfo::from_derive_input(&input).unwrap()\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605828470,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,7 +26,11 @@\n \n pub (crate) fn process_auto_deref(input: DeriveInput) -> TokenStream {\n \n     let AutoDerefInfo {\n-\n+        ident,\n+        generics,\n+        data:Data::Struct(fields),\n+        mutable,\n+        field,\n     } = AutoDerefInfo::from_derive_input(&input).unwrap()\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605835944,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -32,5 +32,8 @@\n         data:Data::Struct(fields),\n         mutable,\n         field,\n     } = AutoDerefInfo::from_derive_input(&input).unwrap()\n+    else{\n+        \n+    }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720605856257,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n \n #[derive(Debug,FromDeriveInput)]\n #[darling(attributes(deref))]\n-struct AutoDebugInfo{\n+struct AutoDerefInfo{\n     ident: syn::Ident,\n     generics: syn::Generics,\n     data: syn::Data<(),AutoDerefFieldsInfo>,\n     #[darling(default)]\n@@ -33,7 +33,7 @@\n         mutable,\n         field,\n     } = AutoDerefInfo::from_derive_input(&input).unwrap()\n     else{\n-        \n+\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606034482,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,6 @@\n+use core::panic;\n+\n use darling::{ast::Data,FromDeriveInput,FromField};\n use proc_macro2::TokenStream;\n use quote::quote;\n use syn::DeriveInput;\n@@ -33,7 +35,12 @@\n         mutable,\n         field,\n     } = AutoDerefInfo::from_derive_input(&input).unwrap()\n     else{\n-\n+        let (fd,ty) = if let Some(field) = field{\n+            match fields.iter().find(|f|f.ident.as_ref().unwrap() == &field) {\n+                Some(f) => (field,&f.ty),\n+                None => panic(\"field {:?} not found in the data structure\", field),\n+            }\n+        }\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606073316,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -35,12 +35,14 @@\n         mutable,\n         field,\n     } = AutoDerefInfo::from_derive_input(&input).unwrap()\n     else{\n-        let (fd,ty) = if let Some(field) = field{\n-            match fields.iter().find(|f|f.ident.as_ref().unwrap() == &field) {\n-                Some(f) => (field,&f.ty),\n-                None => panic(\"field {:?} not found in the data structure\", field),\n-            }\n+       panic!(\"AutoDeref only works on structs\");\n+    };\n+\n+    let (fd,ty) = if let Some(field) = field{\n+        match fields.iter().find(|f|f.ident.as_ref().unwrap() == &field) {\n+            Some(f) => (field,&f.ty),\n+            None => panic(\"field {:?} not found in the data structure\", field),\n         }\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606083329,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,8 +41,8 @@\n \n     let (fd,ty) = if let Some(field) = field{\n         match fields.iter().find(|f|f.ident.as_ref().unwrap() == &field) {\n             Some(f) => (field,&f.ty),\n-            None => panic(\"field {:?} not found in the data structure\", field),\n+            None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606111024,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -39,9 +39,9 @@\n        panic!(\"AutoDeref only works on structs\");\n     };\n \n     let (fd,ty) = if let Some(field) = field{\n-        match fields.iter().find(|f|f.ident.as_ref().unwrap() == &field) {\n+        match fields.iter().find(|f: &&AutoDerefFieldsInfo|f.ident.as_ref().unwrap() == &field) {\n             Some(f) => (field,&f.ty),\n             None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n     }\n"
+                },
+                {
+                    "date": 1720606161245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -38,9 +38,9 @@\n     else{\n        panic!(\"AutoDeref only works on structs\");\n     };\n \n-    let (fd,ty) = if let Some(field) = field{\n+    let (fd,ty) = if let Some(field) = field {\n         match fields.iter().find(|f: &&AutoDerefFieldsInfo|f.ident.as_ref().unwrap() == &field) {\n             Some(f) => (field,&f.ty),\n             None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n"
+                },
+                {
+                    "date": 1720606167571,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,6 +43,8 @@\n         match fields.iter().find(|f: &&AutoDerefFieldsInfo|f.ident.as_ref().unwrap() == &field) {\n             Some(f) => (field,&f.ty),\n             None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n+    }else{\n+        \n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606243653,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,7 +44,7 @@\n             Some(f) => (field,&f.ty),\n             None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n     }else{\n-        \n-    }\n+\n+    };\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606357474,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -44,7 +44,12 @@\n             Some(f) => (field,&f.ty),\n             None => panic!(\"field {:?} not found in the data structure\", field),\n         }\n     }else{\n-\n+        if fields.len() == 1{\n+            let f:&AutoDerefFieldsInfo = fields.iter().next().unwrap();\n+            (f.ident.as_ref().unwrap().clone(),&f.ty)\n+        }else{\n+            panic!(\"AutoDeref only works on structs with 1 field or with fields attribute\")\n+        }\n     };\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606485915,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,8 +48,16 @@\n         if fields.len() == 1{\n             let f:&AutoDerefFieldsInfo = fields.iter().next().unwrap();\n             (f.ident.as_ref().unwrap().clone(),&f.ty)\n         }else{\n-            panic!(\"AutoDeref only works on structs with 1 field or with fields attribute\")\n+            panic!(\"AutoDeref only works on structs with 1 field or with fields attribute\");\n         }\n     };\n+\n+\n+    let mut code:Vec<TokenStream> = vec![quote! {\n+        impl #generics std::ops::Deref for #ident #generics {\n+            \n+        }\n+    }];\n+\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606497241,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -55,8 +55,9 @@\n \n \n     let mut code:Vec<TokenStream> = vec![quote! {\n         impl #generics std::ops::Deref for #ident #generics {\n+            type target = #ty;\n             \n         }\n     }];\n \n"
+                },
+                {
+                    "date": 1720606547694,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -56,9 +56,12 @@\n \n     let mut code:Vec<TokenStream> = vec![quote! {\n         impl #generics std::ops::Deref for #ident #generics {\n             type target = #ty;\n-            \n+\n+            fn deref(&self) -> &Self::Target {\n+                &self.#fd\n+            }\n         }\n     }];\n \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606590552,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,5 +63,16 @@\n             }\n         }\n     }];\n \n+\n+    if mutable {\n+        code.push(quote!{\n+\n+        })\n+    }\n+\n+    quote!{\n+        #{#code}*\n+    }\n+\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606602484,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -67,9 +67,9 @@\n \n     if mutable {\n         code.push(quote!{\n \n-        })\n+        });\n     }\n \n     quote!{\n         #{#code}*\n"
+                },
+                {
+                    "date": 1720606710744,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,13 @@\n \n \n     if mutable {\n         code.push(quote!{\n-\n+            impl #generics std::ops::DerefMut for #ident #generics {\n+                fn deref_mut(&mut self) -> &mut Self::Target {\n+                    &mut self.#fd\n+                }\n+            }\n         });\n     }\n \n     quote!{\n"
+                },
+                {
+                    "date": 1720606718819,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,9 +74,9 @@\n             }\n         });\n     }\n \n-    quote!{\n+    quote! {\n         #{#code}*\n     }\n \n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1720606732187,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,82 @@\n+use core::panic;\n+\n+use darling::{ast::Data,FromDeriveInput,FromField};\n+use proc_macro2::TokenStream;\n+use quote::quote;\n+use syn::DeriveInput;\n+\n+\n+#[derive(Debug,FromDeriveInput)]\n+#[darling(attributes(deref))]\n+struct AutoDerefInfo{\n+    ident: syn::Ident,\n+    generics: syn::Generics,\n+    data: syn::Data<(),AutoDerefFieldsInfo>,\n+    #[darling(default)]\n+    mutable: bool,\n+    #[darling(default)]\n+    field: Option<syn::Ident>\n+}\n+\n+\n+#[derive(Debug,FromField)]\n+struct AutoDerefFieldsInfo {\n+    ident: Option<syn::Ident>,\n+    ty: syn::Type,\n+}\n+\n+\n+pub (crate) fn process_auto_deref(input: DeriveInput) -> TokenStream {\n+\n+    let AutoDerefInfo {\n+        ident,\n+        generics,\n+        data:Data::Struct(fields),\n+        mutable,\n+        field,\n+    } = AutoDerefInfo::from_derive_input(&input).unwrap()\n+    else{\n+       panic!(\"AutoDeref only works on structs\");\n+    };\n+\n+    let (fd,ty) = if let Some(field) = field {\n+        match fields.iter().find(|f: &&AutoDerefFieldsInfo|f.ident.as_ref().unwrap() == &field) {\n+            Some(f) => (field,&f.ty),\n+            None => panic!(\"field {:?} not found in the data structure\", field),\n+        }\n+    }else{\n+        if fields.len() == 1{\n+            let f:&AutoDerefFieldsInfo = fields.iter().next().unwrap();\n+            (f.ident.as_ref().unwrap().clone(),&f.ty)\n+        }else{\n+            panic!(\"AutoDeref only works on structs with 1 field or with fields attribute\");\n+        }\n+    };\n+\n+\n+    let mut code:Vec<TokenStream> = vec![quote! {\n+        impl #generics std::ops::Deref for #ident #generics {\n+            type target = #ty;\n+\n+            fn deref(&self) -> &Self::Target {\n+                &self.#fd\n+            }\n+        }\n+    }];\n+\n+\n+    if mutable {\n+        code.push(quote!{\n+            impl #generics std::ops::DerefMut for #ident #generics {\n+                fn deref_mut(&mut self) -> &mut Self::Target {\n+                    &mut self.#fd\n+                }\n+            }\n+        });\n+    }\n+\n+    quote! {\n+        #(#code)*\n+    }\n+\n+}\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1720605469964,
+            "name": "Commit-0",
+            "content": "use darling::{ast::Data,FromDeriveInput,FromField};\nuse proc_macro2::TokenStream;\nuse quote::quote;\nuse syn::DeriveInput;\n"
+        }
+    ]
+}

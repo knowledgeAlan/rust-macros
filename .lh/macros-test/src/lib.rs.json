@@ -1,0 +1,26 @@
+{
+    "sourceFile": "macros-test/src/lib.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1720602364467,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1720602563506,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,4 +2,6 @@\n mod auto_defref;\n mod enum_from_darling;\n mod enum_from;\n \n+\n+\n"
+                },
+                {
+                    "date": 1720606794036,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,7 @@\n+mod auto_debug;\n+mod auto_deref;\n+mod enum_from_darling;\n+mod enum_from;\n+\n+\n+\n"
+                }
+            ],
+            "date": 1720602364467,
+            "name": "Commit-0",
+            "content": "mod auto_debug;\nmod auto_defref;\nmod enum_from_darling;\nmod enum_from;\n\n"
+        }
+    ]
+}
