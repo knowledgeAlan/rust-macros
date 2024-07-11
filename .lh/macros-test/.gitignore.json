@@ -1,0 +1,18 @@
+{
+    "sourceFile": "macros-test/.gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1720606835329,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1720606835329,
+            "name": "Commit-0",
+            "content": "/target\n.lh\n.github\n.history"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "sourceFile": "macros-test/src/enum_from_darling.rs",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1720690375135,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1720690402854,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,6 @@\n use darling::{\n     ast::{Data,Fields,Style},\n     FromDeriveInput,FromField,FromVariant,\n-}\n\\ No newline at end of file\n+};\n+\n+use proc_macro2::TokenStream;\n"
+                }
+            ],
+            "date": 1720690375135,
+            "name": "Commit-0",
+            "content": "use darling::{\n    ast::{Data,Fields,Style},\n    FromDeriveInput,FromField,FromVariant,\n}"
+        }
+    ]
+}
