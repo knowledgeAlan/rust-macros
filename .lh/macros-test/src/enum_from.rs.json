@@ -3,11 +3,79 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 17,
             "patches": [
                 {
                     "date": 1720602374194,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1720769855362,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,5 @@\n+use proc_macro2::TokenStream;\n+use quote::quote;\n+use syn::DeriveInput;\n+\n+\n"
+                },
+                {
+                    "date": 1720769905344,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,8 @@\n use proc_macro2::TokenStream;\n use quote::quote;\n use syn::DeriveInput;\n \n+pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n \n+    let ident = input.ident();\n+}\n"
+                },
+                {
+                    "date": 1720769938413,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,6 +3,7 @@\n use syn::DeriveInput;\n \n pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n \n-    let ident = input.ident();\n+    let ident: syn::Ident = input.ident();\n+    let generics: syn::Generics = input.generics();\n }\n"
+                },
+                {
+                    "date": 1720769990832,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,5 +5,10 @@\n pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n \n     let ident: syn::Ident = input.ident();\n     let generics: syn::Generics = input.generics();\n+\n+    let variants = match input.data  {\n+        sys::Data::Enum(data) => data.variants,\n+        \n+    };\n }\n"
+                },
+                {
+                    "date": 1720770082208,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,8 +7,8 @@\n     let ident: syn::Ident = input.ident();\n     let generics: syn::Generics = input.generics();\n \n     let variants = match input.data  {\n-        sys::Data::Enum(data) => data.variants,\n-        \n+        syn::Data::Enum(data) => data.variants,\n+        _ => panic!(\"EnumFrom only works for enums\"),\n     };\n }\n"
+                },
+                {
+                    "date": 1720770136819,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,22 @@\n+use proc_macro2::TokenStream;\n+use quote::quote;\n+use syn::DeriveInput;\n+\n+pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n+\n+    let ident: syn::Ident = input.ident();\n+    let generics: syn::Generics = input.generics();\n+\n+    let variants = match input.data  {\n+        syn::Data::Enum(data) => data.variants,\n+        _ => panic!(\"EnumFrom only works for enums\"),\n+    };\n+\n+\n+    let from_imps = variants.iter().map(|variant|{\n+\n+        let var:&syn::Ident = &variant.ident;\n+        \n+\n+    });\n+}\n"
+                },
+                {
+                    "date": 1720770194745,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,22 +15,13 @@\n \n     let from_imps = variants.iter().map(|variant|{\n \n         let var:&syn::Ident = &variant.ident;\n-        \n \n+        match &variant.fields {\n+            syn::Fields::Unnamed(fields) => {\n+                \n+            }\n+        }\n+\n     });\n }\n-use proc_macro2::TokenStream;\n-use quote::quote;\n-use syn::DeriveInput;\n-\n-pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n-\n-    let ident: syn::Ident = input.ident();\n-    let generics: syn::Generics = input.generics();\n-\n-    let variants = match input.data  {\n-        syn::Data::Enum(data) => data.variants,\n-        _ => panic!(\"EnumFrom only works for enums\"),\n-    };\n-}\n"
+                },
+                {
+                    "date": 1720770230195,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,14 @@\n         let var:&syn::Ident = &variant.ident;\n \n         match &variant.fields {\n             syn::Fields::Unnamed(fields) => {\n-                \n+\n+                if fields.unnamed.len() != 1 {\n+                    quote! {}\n+                }else {\n+                    \n+                }\n             }\n         }\n \n     });\n"
+                },
+                {
+                    "date": 1720770268916,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,33 @@\n+use proc_macro2::TokenStream;\n+use quote::quote;\n+use syn::DeriveInput;\n+\n+pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n+\n+    let ident: syn::Ident = input.ident();\n+    let generics: syn::Generics = input.generics();\n+\n+    let variants = match input.data  {\n+        syn::Data::Enum(data) => data.variants,\n+        _ => panic!(\"EnumFrom only works for enums\"),\n+    };\n+\n+\n+    let from_imps = variants.iter().map(|variant|{\n+\n+        let var:&syn::Ident = &variant.ident;\n+\n+        match &variant.fields {\n+            syn::Fields::Unnamed(fields) => {\n+\n+                if fields.unnamed.len() != 1 {\n+                    quote! {}\n+                }else {\n+                    let field:&syn::Field = fields.unnamed.first().expect(\"should have 1 field\");\n+                    \n+                }\n+            }\n+        }\n+\n+    });\n+}\n"
+                },
+                {
+                    "date": 1720770285053,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,8 +23,9 @@\n                 if fields.unnamed.len() != 1 {\n                     quote! {}\n                 }else {\n                     let field:&syn::Field = fields.unnamed.first().expect(\"should have 1 field\");\n+                    let ty:&syn::Type = &field.ty;\n                     \n                 }\n             }\n         }\n"
+                },
+                {
+                    "date": 1720770293398,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,41 +24,12 @@\n                     quote! {}\n                 }else {\n                     let field:&syn::Field = fields.unnamed.first().expect(\"should have 1 field\");\n                     let ty:&syn::Type = &field.ty;\n-                    \n-                }\n-            }\n-        }\n \n-    });\n-}\n-use proc_macro2::TokenStream;\n-use quote::quote;\n-use syn::DeriveInput;\n-\n-pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n-\n-    let ident: syn::Ident = input.ident();\n-    let generics: syn::Generics = input.generics();\n-\n-    let variants = match input.data  {\n-        syn::Data::Enum(data) => data.variants,\n-        _ => panic!(\"EnumFrom only works for enums\"),\n-    };\n-\n-\n-    let from_imps = variants.iter().map(|variant|{\n-\n-        let var:&syn::Ident = &variant.ident;\n-\n-        match &variant.fields {\n-            syn::Fields::Unnamed(fields) => {\n-\n-                if fields.unnamed.len() != 1 {\n-                    quote! {}\n-                }else {\n-                    \n+                    quote! {\n+                        \n+                    }\n                 }\n             }\n         }\n \n"
+                },
+                {
+                    "date": 1720770586069,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n         _ => panic!(\"EnumFrom only works for enums\"),\n     };\n \n \n-    let from_imps = variants.iter().map(|variant|{\n+    let from_imps = variants.iter().map(|variant: &syn::Variant|{\n \n         let var:&syn::Ident = &variant.ident;\n \n         match &variant.fields {\n@@ -26,9 +26,13 @@\n                     let field:&syn::Field = fields.unnamed.first().expect(\"should have 1 field\");\n                     let ty:&syn::Type = &field.ty;\n \n                     quote! {\n-                        \n+                         impl #generics From<#ty> for #ident #generics{\n+                            fn from(v: #ty) -> Self {\n+                                #ident::#var(v)\n+                            }\n+                         }   \n                     }\n                 }\n             }\n         }\n"
+                },
+                {
+                    "date": 1720770623940,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,8 +34,12 @@\n                          }   \n                     }\n                 }\n             }\n+\n+            => quote! {}\n         }\n \n+        _\n+\n     });\n }\n"
+                },
+                {
+                    "date": 1720770645237,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -35,11 +35,11 @@\n                     }\n                 }\n             }\n \n-            => quote! {}\n+            _ => quote! {},\n         }\n \n-        _\n+         \n \n     });\n }\n"
+                },
+                {
+                    "date": 1720771326286,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,10 +3,10 @@\n use syn::DeriveInput;\n \n pub(crate) fn process_enum_from(input:DeriveInput) -> TokenStream {\n \n-    let ident: syn::Ident = input.ident();\n-    let generics: syn::Generics = input.generics();\n+    let ident: syn::Ident = input.ident;\n+    let generics: syn::Generics = input.generics;\n \n     let variants = match input.data  {\n         syn::Data::Enum(data) => data.variants,\n         _ => panic!(\"EnumFrom only works for enums\"),\n"
+                },
+                {
+                    "date": 1720771364040,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,5 +41,10 @@\n \n          \n \n     });\n+\n+\n+    quote! {\n+        #(#from_impls)*\n+    }\n }\n"
+                },
+                {
+                    "date": 1720771376715,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n         _ => panic!(\"EnumFrom only works for enums\"),\n     };\n \n \n-    let from_imps = variants.iter().map(|variant: &syn::Variant|{\n+    let from_impls = variants.iter().map(|variant: &syn::Variant|{\n \n         let var:&syn::Ident = &variant.ident;\n \n         match &variant.fields {\n"
                 }
             ],
             "date": 1720602374194,

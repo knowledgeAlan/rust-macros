@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 2,
+            "activePatchIndex": 19,
             "patches": [
                 {
                     "date": 1720602364467,
@@ -16,6 +16,74 @@
                 {
                     "date": 1720606794036,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,7 @@\n+mod auto_debug;\n+mod auto_deref;\n+mod enum_from_darling;\n+mod enum_from;\n+\n+\n+\n"
+                },
+                {
+                    "date": 1720771129529,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,13 +2,12 @@\n mod auto_deref;\n mod enum_from_darling;\n mod enum_from;\n \n+use auto_debug::process_auto_debug;\n+use auto_deref::process_auto_deref;\n+use enum_from::process_enum_from;\n+use enum_from_darling::process_enum_from_darling;\n+use proc_macro::TokenStream;\n+use sync::DeriveInput;\n \n \n-mod auto_debug;\n-mod auto_defref;\n-mod enum_from_darling;\n-mod enum_from;\n-\n-\n-\n"
+                },
+                {
+                    "date": 1720771135864,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,7 +7,9 @@\n use auto_deref::process_auto_deref;\n use enum_from::process_enum_from;\n use enum_from_darling::process_enum_from_darling;\n use proc_macro::TokenStream;\n-use sync::DeriveInput;\n+use syn::DeriveInput;\n \n \n+\n+\n"
+                },
+                {
+                    "date": 1720771242668,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,7 +9,13 @@\n use enum_from_darling::process_enum_from_darling;\n use proc_macro::TokenStream;\n use syn::DeriveInput;\n \n+#[proc_macro_derive(EnumFrom)]\n+pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput));\n \n+    process_enum_from(input).into();\n+}\n \n \n+\n"
+                },
+                {
+                    "date": 1720771250303,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,11 +11,14 @@\n use syn::DeriveInput;\n \n #[proc_macro_derive(EnumFrom)]\n pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n-    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput));\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n \n     process_enum_from(input).into();\n }\n \n \n \n+\n+\n+\n"
+                },
+                {
+                    "date": 1720771407336,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n #[proc_macro_derive(EnumFrom)]\n pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n     let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n \n-    process_enum_from(input).into();\n+    return process_enum_from(input).into();\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771464613,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,8 +17,11 @@\n     return process_enum_from(input).into();\n }\n \n \n+#[proc_macro_derive(EnumFromDarling)]\n \n \n \n \n+\n+\n"
+                },
+                {
+                    "date": 1720771512186,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,10 +18,12 @@\n }\n \n \n #[proc_macro_derive(EnumFromDarling)]\n+pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n+    \n+}\n \n \n \n \n \n-\n"
+                },
+                {
+                    "date": 1720771547905,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n \n \n #[proc_macro_derive(EnumFromDarling)]\n pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n-    \n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771567809,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,8 +20,10 @@\n \n #[proc_macro_derive(EnumFromDarling)]\n pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n     let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n+\n+    process_enum_from_darling(input).into()\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771654409,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,8 +24,14 @@\n \n     process_enum_from_darling(input).into()\n }\n \n+#[proc_macros_derive(AutoDeref,attributes(deref))]\n+pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n+    \n+}\n \n \n \n \n+\n+\n"
+                },
+                {
+                    "date": 1720771660169,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,11 +24,11 @@\n \n     process_enum_from_darling(input).into()\n }\n \n-#[proc_macros_derive(AutoDeref,attributes(deref))]\n+#[proc_macro_derive(AutoDeref,attributes(deref))]\n pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n-    \n+\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771697370,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,8 +27,10 @@\n \n #[proc_macro_derive(AutoDeref,attributes(deref))]\n pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n \n+\n+    let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771722920,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,8 +29,10 @@\n pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n \n \n     let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n+    println!(\"{:#?}\",input);\n+    \n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771739672,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,9 +30,10 @@\n \n \n     let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n     println!(\"{:#?}\",input);\n-    \n+\n+    process_auto_deref(input).into();\n }\n \n \n \n"
+                },
+                {
+                    "date": 1720771814945,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,49 @@\n+mod auto_debug;\n+mod auto_deref;\n+mod enum_from_darling;\n+mod enum_from;\n+\n+use auto_debug::process_auto_debug;\n+use auto_deref::process_auto_deref;\n+use enum_from::process_enum_from;\n+use enum_from_darling::process_enum_from_darling;\n+use proc_macro::TokenStream;\n+use syn::DeriveInput;\n+\n+#[proc_macro_derive(EnumFrom)]\n+pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n+\n+    return process_enum_from(input).into();\n+}\n+\n+\n+#[proc_macro_derive(EnumFromDarling)]\n+pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n+\n+    process_enum_from_darling(input).into()\n+}\n+\n+#[proc_macro_derive(AutoDeref,attributes(deref))]\n+pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n+\n+\n+    let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n+    println!(\"{:#?}\",input);\n+\n+    process_auto_deref(input).into()\n+}\n+\n+\n+#[proc_macro_derive(AutoDebug,attributes(Debug))]\n+pub fn derive_auto_debug(input:TokenStream) -> TokenStream {\n+    \n+}\n+\n+\n+\n+\n+\n+\n+\n"
+                },
+                {
+                    "date": 1720771848992,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,8 +37,9 @@\n \n \n #[proc_macro_derive(AutoDebug,attributes(Debug))]\n pub fn derive_auto_debug(input:TokenStream) -> TokenStream {\n+    let input = syn::parse_macro_input!(input as DeriveInput);\n     \n }\n \n \n@@ -46,46 +47,4 @@\n \n \n \n \n-mod auto_debug;\n-mod auto_deref;\n-mod enum_from_darling;\n-mod enum_from;\n-\n-use auto_debug::process_auto_debug;\n-use auto_deref::process_auto_deref;\n-use enum_from::process_enum_from;\n-use enum_from_darling::process_enum_from_darling;\n-use proc_macro::TokenStream;\n-use syn::DeriveInput;\n-\n-#[proc_macro_derive(EnumFrom)]\n-pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n-    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n-\n-    return process_enum_from(input).into();\n-}\n-\n-\n-#[proc_macro_derive(EnumFromDarling)]\n-pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n-    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n-\n-    process_enum_from_darling(input).into()\n-}\n-\n-#[proc_macro_derive(AutoDeref,attributes(deref))]\n-pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n-\n-\n-    let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n-    println!(\"{:#?}\",input);\n-\n-    process_auto_deref(input).into();\n-}\n-\n-\n-\n-\n-\n-\n"
+                },
+                {
+                    "date": 1720771865649,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,51 @@\n+mod auto_debug;\n+mod auto_deref;\n+mod enum_from_darling;\n+mod enum_from;\n+\n+use auto_debug::process_auto_debug;\n+use auto_deref::process_auto_deref;\n+use enum_from::process_enum_from;\n+use enum_from_darling::process_enum_from_darling;\n+use proc_macro::TokenStream;\n+use syn::DeriveInput;\n+\n+#[proc_macro_derive(EnumFrom)]\n+pub fn derive_enum_from(input:TokenStream) -> TokenStream {\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n+\n+    return process_enum_from(input).into();\n+}\n+\n+\n+#[proc_macro_derive(EnumFromDarling)]\n+pub fn derive_enum_from_darling(input:TokenStream) -> TokenStream{\n+    let input:DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);\n+\n+    process_enum_from_darling(input).into()\n+}\n+\n+#[proc_macro_derive(AutoDeref,attributes(deref))]\n+pub fn derive_auto_deref(input:TokenStream) -> TokenStream{\n+\n+\n+    let input:DeriveInput = syn::parse_macro_input!(input as DeriveInput);\n+    println!(\"{:#?}\",input);\n+\n+    process_auto_deref(input).into()\n+}\n+\n+\n+#[proc_macro_derive(AutoDebug,attributes(Debug))]\n+pub fn derive_auto_debug(input:TokenStream) -> TokenStream {\n+    let input = syn::parse_macro_input!(input as DeriveInput);\n+\n+    process_auto_debug(input).into()\n+}\n+\n+\n+\n+\n+\n+\n+\n"
                 }
             ],
             "date": 1720602364467,
